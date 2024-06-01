@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
     before_action :set_user, only: %i[ show update destroy ]
+    skip_before_action :authorized, only: %i[ create login ]
+    before_action :require_authorization, except: %i[ create login ]
   
     # GET /users
     def index
@@ -34,6 +36,22 @@ class UsersController < ApplicationController
     # DELETE /users/1
     def destroy
       @user.destroy
+    end
+
+    def login
+      @user = User.find_by(username: params[:username])
+      if @user && @user.authenticate(params[:password])
+        payload = { user_id: @user.id }
+        token = JsonWebToken.encode(payload)
+        render json: { token: token }
+      else
+        render json: { error: 'Invalid username or password' }, status: :unauthorized
+      end
+    end
+  
+  
+    def auto_login
+      render json: current_user
     end
   
     private
