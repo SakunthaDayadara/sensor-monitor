@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sensor_id: MyString
+  date_column: 2024-06-15
+  time_column: 2024-06-15 11:30:06
+  data_value: 1
+
+two:
+  sensor_id: MyString
+  date_column: 2024-06-15
+  time_column: 2024-06-15 11:30:06
+  data_value: 1

@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_15_162456) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_15_062517) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "sensor_data", force: :cascade do |t|
     t.string "sensor_id"
     t.date "date_column"
-    t.string "time_column"
+    t.time "time_column"
     t.integer "data_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -27,7 +27,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_15_162456) do
     t.integer "threshold_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "state", default: "active"
   end
 
   create_table "sensors", primary_key: "sensor_id", id: :string, force: :cascade do |t|
@@ -43,7 +42,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_15_162456) do
     t.string "telephone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "email"
   end
 
   add_foreign_key "sensor_data", "sensors", primary_key: "sensor_id"

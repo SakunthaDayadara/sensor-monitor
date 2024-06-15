@@ -15,35 +15,10 @@ class SensorDataController < ApplicationController
 
   # POST /sensor_data
   def create
-    date_time = DateTime.parse(sensor_datum_params[:date_str])
-    date_column = date_time.to_date
-    time_column = date_time.strftime("%H:%M:%S")
-    sensor_value = Sensor.find_by(sensor_id: sensor_datum_params[:sensor_id])
-
-    @sensor_datum = SensorDatum.new(
-      sensor_id: sensor_datum_params[:sensor_id],
-      date_column: date_column,
-      time_column: time_column,
-      data_value: sensor_datum_params[:data_value]  
-    )
+    @sensor_datum = SensorDatum.new(sensor_datum_params)
 
     if @sensor_datum.save
-      @sensor_threshold = SensorThreshold.find_by(sensor_id: sensor_datum_params[:sensor_id])
-      if @sensor_threshold && sensor_datum_params[:data_value].to_i > @sensor_threshold.threshold_value
-        @sensor = Sensor.find_by(sensor_id: sensor_datum_params[:sensor_id])
-        @user = User.find(@sensor.user_id)
-        formatted_number = "+94" + @user.telephone[-9..-1]
-        text = "Your sensor value has exceeded the threshold value. Please check the sensor."
-        response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
-                                 body: { to: formatted_number, text: text }, timeout: 20)
-        if response.success?
-          render json: @sensor_datum, status: :created, location: @sensor_datum
-        else
-          render json: { error: "Failed to send SMS" }, status: :unprocessable_entity
-        end
-      else
-        render json: @sensor_datum, status: :created, location: @sensor_datum
-      end
+      render json: @sensor_datum, status: :created, location: @sensor_datum
     else
       render json: @sensor_datum.errors, status: :unprocessable_entity
     end
